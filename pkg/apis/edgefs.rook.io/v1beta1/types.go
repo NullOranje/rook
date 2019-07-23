@@ -325,6 +325,10 @@ type ISGWSpec struct {
 	Direction string `json:"direction,omitempty"`
 	// ISGW remote URL
 	RemoteURL string `json:"remoteURL,omitempty"`
+	// ISGW ServiceType (default is ClusterIP)
+	ServiceType string `json:"serviceType,omitempty"`
+	// ISGW external port
+	ExternalPort uint `json:"externalPort,omitempty"`
 	// ISGW Replication Type
 	ReplicationType string `json:"replicationType,omitempty"`
 	// ISGW Metadata Only flag, all or versions

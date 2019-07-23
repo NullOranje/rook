@@ -131,6 +131,7 @@ func getDirection(isgwSpec edgefsv1beta1.ISGWSpec) int {
 func (c *ISGWController) makeISGWService(name, svcname, namespace string, isgwSpec edgefsv1beta1.ISGWSpec) *v1.Service {
 	direction := getDirection(isgwSpec)
 	labels := getLabels(name, svcname, namespace)
+	serviceType, _ := k8sutil.GetServiceType(isgwSpec.ServiceType)
 	svc := &v1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -139,7 +140,7 @@ func (c *ISGWController) makeISGWService(name, svcname, namespace string, isgwSp
 		},
 		Spec: v1.ServiceSpec{
 			Selector: labels,
-			Type:     v1.ServiceTypeClusterIP,
+			Type:     serviceType,
 			Ports: []v1.ServicePort{
 				{Name: "grpc", Port: 49000, Protocol: v1.ProtocolTCP},
 			},
@@ -153,8 +154,11 @@ func (c *ISGWController) makeISGWService(name, svcname, namespace string, isgwSp
 			return svc
 		}
 		lport, _ := strconv.Atoi(port)
-
-		svc.Spec.Ports = append(svc.Spec.Ports, v1.ServicePort{Name: "lport", Port: int32(lport), Protocol: v1.ProtocolTCP})
+		lportServicePort := v1.ServicePort{Name: "lport", Port: int32(lport), Protocol: v1.ProtocolTCP}
+		if isgwSpec.ExternalPort != 0 {
+			lportServicePort.NodePort = int32(isgwSpec.ExternalPort)
+		}
+		svc.Spec.Ports = append(svc.Spec.Ports, lportServicePort)
 
 		if laddr != defaultLocalIPAddr && laddr != defaultLocalIPv6Addr {
 			logger.Infof("ISGW service %s assigned with externalIP=%s", svcname, laddr)
@@ -427,6 +431,10 @@ func validateService(context *clusterd.Context, s edgefsv1beta1.ISGW) error {
 	}
 	if s.Namespace == "" {
 		return fmt.Errorf("missing namespace")
+	}
+
+	if _, err := k8sutil.GetServiceType(s.Spec.ServiceType); err != nil {
+		return err
 	}
 
 	return nil
