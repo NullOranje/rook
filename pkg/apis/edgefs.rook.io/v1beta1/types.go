@@ -160,6 +160,12 @@ type S3Spec struct {
 	Port uint `json:"port,omitempty"`
 	//S3 Https port (default value 9443)
 	SecurePort uint `json:"securePort,omitempty"`
+	// Service type to expose (default value ClusterIP)
+	ServiceType string `json:"serviceType,omitempty"`
+	// S3 Http external port
+	ExternalPort uint `json:"externalPort,omitempty"`
+	// S3 Https external port
+	SecureExternalPort uint `json:"secureExternalPort,omitempty"`
 	// The name of the secret that stores the ssl certificate for secure s3 connections
 	SSLCertificateRef string `json:"sslCertificateRef,omitempty"`
 	// S3 type: s3 (bucket as url, default), s3s (bucket as DNS subdomain), s3g (new, experimental)
