@@ -122,7 +122,7 @@ func (c *S3XController) makeS3XService(name, svcname, namespace string, s3xSpec 
 		},
 		Spec: v1.ServiceSpec{
 			Selector: labels,
-			Type:     v1.ServiceTypeNodePort,
+			Type:     v1.ServiceTypeClusterIP,
 			Ports: []v1.ServicePort{
 				{Name: "grpc", Port: 49000, Protocol: v1.ProtocolTCP},
 				{Name: "port", Port: int32(s3xSpec.Port), Protocol: v1.ProtocolTCP},

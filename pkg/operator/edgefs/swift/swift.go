@@ -135,7 +135,7 @@ func (c *SWIFTController) makeSWIFTService(name, svcname, namespace string, swif
 		},
 		Spec: v1.ServiceSpec{
 			Selector: labels,
-			Type:     v1.ServiceTypeNodePort,
+			Type:     v1.ServiceTypeClusterIP,
 			Ports: []v1.ServicePort{
 				{Name: "grpc", Port: 49000, Protocol: v1.ProtocolTCP},
 				{Name: "port", Port: int32(swiftSpec.Port), Protocol: v1.ProtocolTCP},

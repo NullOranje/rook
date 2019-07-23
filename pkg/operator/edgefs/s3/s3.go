@@ -146,7 +146,7 @@ func (c *S3Controller) makeS3Service(name, svcname, namespace string, s3Spec edg
 		},
 		Spec: v1.ServiceSpec{
 			Selector: labels,
-			Type:     v1.ServiceTypeNodePort,
+			Type:     v1.ServiceTypeClusterIP,
 			Ports: []v1.ServicePort{
 				{Name: "grpc", Port: 49000, Protocol: v1.ProtocolTCP},
 				{Name: "port", Port: int32(s3Spec.Port), Protocol: v1.ProtocolTCP},
