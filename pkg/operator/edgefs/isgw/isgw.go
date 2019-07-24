@@ -131,7 +131,7 @@ func getDirection(isgwSpec edgefsv1beta1.ISGWSpec) int {
 func (c *ISGWController) makeISGWService(name, svcname, namespace string, isgwSpec edgefsv1beta1.ISGWSpec) *v1.Service {
 	direction := getDirection(isgwSpec)
 	labels := getLabels(name, svcname, namespace)
-	serviceType, _ := k8sutil.GetServiceType(isgwSpec.ServiceType)
+	serviceType := v1.ServiceType(isgwSpec.ServiceType)
 	svc := &v1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -431,10 +431,6 @@ func validateService(context *clusterd.Context, s edgefsv1beta1.ISGW) error {
 	}
 	if s.Namespace == "" {
 		return fmt.Errorf("missing namespace")
-	}
-
-	if _, err := k8sutil.GetServiceType(s.Spec.ServiceType); err != nil {
-		return err
 	}
 
 	return nil

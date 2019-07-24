@@ -204,6 +204,12 @@ type SWIFTSpec struct {
 	Port uint `json:"port,omitempty"`
 	//S3 Https port (default value 9443)
 	SecurePort uint `json:"securePort,omitempty"`
+	// Service type to expose (default value ClusterIP)
+	ServiceType string `json:"serviceType,omitempty"`
+	// S3 Http external port
+	ExternalPort uint `json:"externalPort,omitempty"`
+	// S3 Https external port
+	SecureExternalPort uint `json:"secureExternalPort,omitempty"`
 	// The name of the secret that stores the ssl certificate for secure s3 connections
 	SSLCertificateRef string            `json:"sslCertificateRef,omitempty"`
 	ResourceProfile   string            `json:"resourceProfile,omitempty"`
@@ -242,6 +248,12 @@ type S3XSpec struct {
 	Port uint `json:"port,omitempty"`
 	//S3X Https port (default value 3001)
 	SecurePort uint `json:"securePort,omitempty"`
+	// Service type to expose (default value ClusterIP)
+	ServiceType string `json:"serviceType,omitempty"`
+	// S3 Http external port
+	ExternalPort uint `json:"externalPort,omitempty"`
+	// S3 Https external port
+	SecureExternalPort uint `json:"secureExternalPort,omitempty"`
 	// The name of the secret that stores the ssl certificate for secure s3x connections
 	SSLCertificateRef string            `json:"sslCertificateRef,omitempty"`
 	ResourceProfile   string            `json:"resourceProfile,omitempty"`

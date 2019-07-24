@@ -61,13 +61,3 @@ func UpdateService(
 	serviceDefinition.ResourceVersion = existing.ResourceVersion
 	return clientset.CoreV1().Services(namespace).Update(serviceDefinition)
 }
-
-// GetServiceType converts a string to a service type.  If input string is invalid, return a
-func GetServiceType(serviceType string) (v1.ServiceType, error) {
-	outType := v1.ServiceType(serviceType)
-	switch outType {
-	case v1.ServiceTypeClusterIP, v1.ServiceTypeNodePort, v1.ServiceTypeLoadBalancer:
-		return outType, nil
-	}
-	return outType, fmt.Errorf("invalid ServiceType %s. supported types are 'ClusterIP', 'NodePort', 'LoadBalancer'", outType)
-}

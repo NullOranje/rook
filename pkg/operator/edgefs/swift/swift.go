@@ -127,6 +127,16 @@ func (c *SWIFTController) CreateOrUpdate(s edgefsv1beta1.SWIFT, update bool, own
 
 func (c *SWIFTController) makeSWIFTService(name, svcname, namespace string, swiftSpec edgefsv1beta1.SWIFTSpec) *v1.Service {
 	labels := getLabels(name, svcname, namespace)
+	httpPort := v1.ServicePort{Name: "port", Port: int32(swiftSpec.Port), Protocol: v1.ProtocolTCP}
+	httpsPort := v1.ServicePort{Name: "secure-port", Port: int32(swiftSpec.SecurePort), Protocol: v1.ProtocolTCP}
+
+	if swiftSpec.ExternalPort != 0 {
+		httpPort.NodePort = int32(swiftSpec.ExternalPort)
+	}
+	if swiftSpec.SecureExternalPort != 0 {
+		httpsPort.NodePort = int32(swiftSpec.SecureExternalPort)
+	}
+
 	svc := &v1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -135,11 +145,11 @@ func (c *SWIFTController) makeSWIFTService(name, svcname, namespace string, swif
 		},
 		Spec: v1.ServiceSpec{
 			Selector: labels,
-			Type:     v1.ServiceTypeClusterIP,
+			Type:     v1.ServiceType(swiftSpec.ServiceType),
 			Ports: []v1.ServicePort{
 				{Name: "grpc", Port: 49000, Protocol: v1.ProtocolTCP},
-				{Name: "port", Port: int32(swiftSpec.Port), Protocol: v1.ProtocolTCP},
-				{Name: "secure-port", Port: int32(swiftSpec.SecurePort), Protocol: v1.ProtocolTCP},
+				httpPort,
+				httpsPort,
 			},
 		},
 	}

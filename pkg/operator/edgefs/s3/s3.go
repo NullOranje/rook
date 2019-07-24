@@ -143,7 +143,6 @@ func (c *S3Controller) CreateOrUpdate(s edgefsv1beta1.S3, update bool, ownerRefs
 
 func (c *S3Controller) makeS3Service(name, svcname, namespace string, s3Spec edgefsv1beta1.S3Spec) *v1.Service {
 	labels := getLabels(name, svcname, namespace)
-	serviceType, _ := k8sutil.GetServiceType(s3Spec.ServiceType)
 	httpPort := v1.ServicePort{Name: "port", Port: int32(s3Spec.Port), Protocol: v1.ProtocolTCP}
 	httpsPort := v1.ServicePort{Name: "secure-port", Port: int32(s3Spec.SecurePort), Protocol: v1.ProtocolTCP}
 
@@ -162,7 +161,7 @@ func (c *S3Controller) makeS3Service(name, svcname, namespace string, s3Spec edg
 		},
 		Spec: v1.ServiceSpec{
 			Selector: labels,
-			Type:     serviceType,
+			Type:     v1.ServiceType(s3Spec.ServiceType),
 			Ports: []v1.ServicePort{
 				{Name: "grpc", Port: 49000, Protocol: v1.ProtocolTCP},
 				httpPort,
@@ -402,10 +401,6 @@ func validateService(context *clusterd.Context, s edgefsv1beta1.S3) error {
 	}
 	if s.Namespace == "" {
 		return fmt.Errorf("missing namespace")
-	}
-
-	if _, err := k8sutil.GetServiceType(s.Spec.ServiceType); err != nil {
-		return err
 	}
 
 	return nil
